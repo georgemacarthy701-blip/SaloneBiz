@@ -85,7 +85,7 @@ export default function DashboardPage() {
       )}
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-4xl font-bold text-gray-900">Professional Dashboard</h1>
           <p className="text-gray-600 mt-3">{user?.email ? `Account: ${user.email}` : 'Manage your services and professional profile'}</p>
@@ -93,7 +93,7 @@ export default function DashboardPage() {
         {user && (
           <Link
             href="/add-business"
-            className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700"
+            className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700"
           >
             <span>➕</span>
             <span>Add Business</span>
