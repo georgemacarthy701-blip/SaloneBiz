@@ -190,7 +190,7 @@ export default function BusinessPage() {
               <form onSubmit={handleSubmitReview} className="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-800 mb-2">
                       Your Rating
                     </label>
                     <div className="flex space-x-2">
@@ -208,7 +208,7 @@ export default function BusinessPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="comment" className="block text-sm font-medium text-gray-800 mb-2">
                       Your Review
                     </label>
                     <textarea
@@ -216,7 +216,7 @@ export default function BusinessPage() {
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
                       rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder:text-gray-400 bg-white"
                       placeholder="Share your experience..."
                     />
                   </div>
