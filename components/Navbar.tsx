@@ -21,24 +21,41 @@ export function Navbar() {
       return;
     }
 
+    const fetchRole = async (userId: string) => {
+      try {
+        const { data: userData } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', userId)
+          .single();
+        setUserRole(userData?.role ?? null);
+      } catch (err) {
+        console.error('Error fetching role:', err);
+        setUserRole(null);
+      }
+    };
+
     try {
       const {
         data: { subscription },
-      } = supabase.auth.onAuthStateChange((event: any, session: any) => {
-        setUser(session?.user ?? null);
+      } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        if (currentUser) {
+          await fetchRole(currentUser.id);
+        } else {
+          setUserRole(null);
+        }
         setLoading(false);
       });
 
       supabase.auth.getSession().then(async ({ data: { session } }: any) => {
-        setUser(session?.user ?? null);
-
-        if (session?.user) {
-          const { data: userData } = await supabase
-            .from('users')
-            .select('role')
-            .eq('id', session.user.id)
-            .single();
-          setUserRole(userData?.role ?? null);
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        if (currentUser) {
+          await fetchRole(currentUser.id);
+        } else {
+          setUserRole(null);
         }
         setLoading(false);
       });
