@@ -13,7 +13,8 @@ export default function AdminLoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleAdminLogin = async (e: React.FormEvent) => {
+    console.log('Login attempt started for email:', email);
     e.preventDefault();
     setError(null);
     setLoading(true);
@@ -22,45 +23,63 @@ export default function AdminLoginPage() {
       const supabase = createClient();
 
       if (!supabase) {
+        console.error('Supabase client failed to initialize');
         setError('Database configuration required. Please set up Supabase in .env.local');
+        alert('Supabase client failed to initialize');
         setLoading(false);
         return;
       }
 
-      // Sign in
+      // Sign in directly
+      console.log('Calling supabase.auth.signInWithPassword directly...');
       const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (signInError) throw signInError;
+      console.log('signInWithPassword finished. data:', authData, 'error:', signInError);
 
-      if (!authData.user) {
-        setError('Sign in failed');
-        setLoading(false);
-        return;
+      if (signInError) {
+        throw signInError;
       }
 
-      // Check if user is admin
+      if (!authData.user) {
+        throw new Error('Sign in failed: No user returned');
+      }
+
+      // Check user role
+      console.log('Fetching user profile role for user ID:', authData.user.id);
       const { data: userData, error: userError } = await supabase
         .from('users')
         .select('role')
         .eq('id', authData.user.id)
         .single();
 
-      if (userError) throw userError;
+      console.log('Fetched role data:', userData, 'error:', userError);
+
+      if (userError) {
+        throw userError;
+      }
+
+      console.log('User role read from db:', userData?.role);
 
       if (userData?.role !== 'admin') {
+        console.error('Access denied. User role is not admin. Signing out auth session.');
         await supabase.auth.signOut();
-        setError('Access denied. Only administrators can access this area.');
+        const errMessage = `Access denied. User is not an admin. Role: ${userData?.role || 'none'}`;
+        setError(errMessage);
+        alert(errMessage);
         setLoading(false);
         return;
       }
 
-      // Redirect to admin dashboard
+      console.log('Authentication and admin role verified! Redirecting to /admin-dashboard...');
       router.push('/admin-dashboard');
     } catch (err: any) {
-      setError(err.message || 'Authentication failed');
+      console.error('Caught error during admin login handler:', err);
+      const errMessage = err.message || 'Authentication failed';
+      setError(errMessage);
+      alert('Login Error: ' + errMessage);
     } finally {
       setLoading(false);
     }
@@ -94,7 +113,7 @@ export default function AdminLoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={(e) => { e.preventDefault(); handleAdminLogin(e); }} className="space-y-5">
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
                 Admin Email

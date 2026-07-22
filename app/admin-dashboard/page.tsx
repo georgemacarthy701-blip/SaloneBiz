@@ -37,32 +37,47 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     const checkAdminAccess = async () => {
+      setLoading(true);
       const supabase = createClient();
       if (!supabase) {
+        console.error('Supabase client failed to initialize in dashboard guard');
         router.push('/admin-login');
         return;
       }
 
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+      try {
+        console.log('Dashboard guard: Checking auth session using getUser...');
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+        if (userError || !user) {
+          console.error('Dashboard guard: Auth verification failed', userError);
+          router.push('/admin-login');
+          return;
+        }
+
+        console.log('Dashboard guard: Authenticated user ID:', user.id);
+
+        const { data: userData, error: dbError } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+
+        console.log('Dashboard guard: Database profile role read:', userData?.role, 'error:', dbError);
+
+        if (dbError || userData?.role !== 'admin') {
+          console.error('Dashboard guard: Access denied. Role is not admin.');
+          router.push('/admin-login');
+          return;
+        }
+
+        setUser(user);
+        setIsAdmin(true);
+        loadData();
+      } catch (err) {
+        console.error('Dashboard guard: Exception during access check', err);
         router.push('/admin-login');
-        return;
       }
-
-      const { data: userData } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', session.user.id)
-        .single();
-
-      if (userData?.role !== 'admin') {
-        router.push('/admin-login');
-        return;
-      }
-
-      setUser(session.user);
-      setIsAdmin(true);
-      loadData();
     };
 
     checkAdminAccess();
@@ -165,6 +180,17 @@ export default function AdminDashboardPage() {
     }
     router.push('/admin-login');
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-gray-600 font-medium text-sm">Verifying administrator access...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAdmin) {
     return null;

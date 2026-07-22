@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { parseMedia } from '@/lib/api';
 // Using emoji icons
 
 interface BusinessCardProps {
@@ -30,16 +31,18 @@ export function BusinessCard({
   startingPrice,
   maximumPrice,
 }: BusinessCardProps) {
+  const { productImage } = parseMedia(cover);
+
   return (
-    <Link href={`/business/${id}`}>
-      <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer h-full">
-        {/* Cover Image */}
-        <div className="relative h-40 bg-gray-200 overflow-hidden">
-          {cover && cover !== 'undefined' ? (
+    <Link href={`/business/${id}`} className="block h-full">
+      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer h-full flex flex-col">
+        {/* Product Image */}
+        <div className="w-full h-48 bg-gray-100 flex items-center justify-center p-2 relative overflow-hidden">
+          {productImage && productImage !== 'undefined' ? (
             <img
-              src={cover}
+              src={productImage}
               alt={name}
-              className="w-full h-full object-cover"
+              className="max-w-full max-h-full object-contain"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}
@@ -57,48 +60,55 @@ export function BusinessCard({
         </div>
 
         {/* Content */}
-        <div className="p-4">
-          <div className="flex items-start justify-between mb-2">
-            <div>
-              <h3 className="font-bold text-gray-900 text-lg line-clamp-2">{name}</h3>
-              <p className="text-sm text-gray-500">{category}</p>
+        <div className="p-4 flex-1 flex flex-col justify-between">
+          <div>
+            <div className="flex items-start justify-between mb-2">
+              <div>
+                <h3 className="font-bold text-gray-900 text-lg line-clamp-2">{name}</h3>
+                <p className="text-sm text-gray-500">{category}</p>
+              </div>
+            </div>
+
+            {/* Rating */}
+            <div className="flex items-center space-x-2 mb-3">
+              <div className="flex items-center">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span key={i} className="text-sm text-yellow-400">
+                    {i < Math.floor(rating) ? '★' : '☆'}
+                  </span>
+                ))}
+              </div>
+              <span className="text-sm font-semibold text-gray-900">{rating.toFixed(1)}</span>
+              <span className="text-xs text-gray-500">({reviews})</span>
+            </div>
+
+            {/* Location */}
+            <div className="text-sm text-gray-600 mb-3">
+              <p className="line-clamp-1">{location}</p>
             </div>
           </div>
 
-          {/* Rating */}
-          <div className="flex items-center space-x-2 mb-3">
-            <div className="flex items-center">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i} className="text-sm text-yellow-400">
-                  {i < Math.floor(rating) ? '★' : '☆'}
-                </span>
-              ))}
-            </div>
-            <span className="text-sm font-semibold text-gray-900">{rating.toFixed(1)}</span>
-            <span className="text-xs text-gray-500">({reviews})</span>
+          <div>
+            {/* Pricing */}
+            {startingPrice ? (
+              <div className="mb-3 pb-3 border-t border-gray-100 pt-3">
+                <p className="text-xs text-gray-500 font-medium">Pricing</p>
+                <p className="text-sm font-bold text-gray-900">
+                  Starting at LE {startingPrice.toLocaleString()}
+                </p>
+              </div>
+            ) : (
+              <div className="mb-3 pb-3 border-t border-transparent pt-3">
+                <p className="text-xs text-transparent select-none font-medium">Pricing Info</p>
+                <p className="text-sm font-bold text-transparent select-none">No Price Range</p>
+              </div>
+            )}
+
+            {/* Action Button */}
+            <button className="w-full bg-blue-50 text-blue-600 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors">
+              View Details
+            </button>
           </div>
-
-          {/* Location */}
-          <div className="text-sm text-gray-600 mb-3">
-            <p className="line-clamp-1">{location}</p>
-          </div>
-
-          {/* Pricing */}
-          {(startingPrice || maximumPrice) && (
-            <div className="mb-3 pb-3 border-t border-gray-100">
-              <p className="text-xs text-gray-500 font-medium">Starting from</p>
-              <p className="text-sm font-bold text-gray-900">
-                {startingPrice && `Le ${startingPrice.toLocaleString()}`}
-                {startingPrice && maximumPrice && ' – '}
-                {maximumPrice && `Le ${maximumPrice.toLocaleString()}`}
-              </p>
-            </div>
-          )}
-
-          {/* Action Button */}
-          <button className="w-full bg-blue-50 text-blue-600 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors">
-            View Details
-          </button>
         </div>
       </div>
     </Link>

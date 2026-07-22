@@ -110,13 +110,6 @@ export function Navbar() {
                 >
                   Sign Up
                 </Link>
-                <div className="h-6 w-px bg-gray-300"></div>
-                <Link
-                  href="/admin-login"
-                  className="px-4 py-2 text-purple-600 hover:text-purple-700 font-medium"
-                >
-                  Admin
-                </Link>
               </div>
             ) : (
               user && (
@@ -185,12 +178,6 @@ export function Navbar() {
                   className="block px-4 py-2 bg-blue-600 text-white rounded-lg text-center font-medium"
                 >
                   Sign Up
-                </Link>
-                <Link
-                  href="/admin-login"
-                  className="block px-4 py-2 text-purple-600 hover:bg-purple-50 rounded-lg font-medium"
-                >
-                  Admin Portal
                 </Link>
               </div>
             ) : (

@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
 import { MediaUpload } from '@/components/MediaUpload';
 import Link from 'next/link';
+import { parseMedia } from '@/lib/api';
 
 const CATEGORIES = [
   'restaurants',
@@ -44,8 +45,8 @@ export default function EditBusinessPage() {
     shortDescription: '',
     hours: '',
     cover: 'https://res.cloudinary.com/dmtx1pah1/image/upload/v1/placeholder',
+    videoUrl: '',
     startingPrice: '',
-    maximumPrice: '',
   });
 
   useEffect(() => {
@@ -93,6 +94,9 @@ export default function EditBusinessPage() {
           return;
         }
 
+        // Parse media config
+        const { productImage, videoUrl } = parseMedia(business.cover_image);
+
         // Populate formData
         setFormData({
           name: business.name || '',
@@ -106,9 +110,9 @@ export default function EditBusinessPage() {
           description: business.description || '',
           shortDescription: business.short_description || '',
           hours: business.hours || '',
-          cover: business.cover_image || 'https://res.cloudinary.com/dmtx1pah1/image/upload/v1/placeholder',
+          cover: productImage || 'https://res.cloudinary.com/dmtx1pah1/image/upload/v1/placeholder',
+          videoUrl: videoUrl || '',
           startingPrice: business.starting_price !== null && business.starting_price !== undefined ? String(business.starting_price) : '',
-          maximumPrice: business.maximum_price !== null && business.maximum_price !== undefined ? String(business.maximum_price) : '',
         });
 
         setPageLoading(false);
@@ -142,13 +146,6 @@ export default function EditBusinessPage() {
 
       // Validate prices
       const startPrice = formData.startingPrice ? parseFloat(formData.startingPrice) : null;
-      const maxPrice = formData.maximumPrice ? parseFloat(formData.maximumPrice) : null;
-
-      if (startPrice !== null && maxPrice !== null && startPrice > maxPrice) {
-        setError('Starting price cannot be greater than maximum price. Please enter valid price range.');
-        setLoading(false);
-        return;
-      }
 
       const supabase = createClient();
 
@@ -171,9 +168,12 @@ export default function EditBusinessPage() {
           description: formData.description,
           short_description: formData.shortDescription || null,
           hours: formData.hours,
-          cover_image: formData.cover,
+          cover_image: JSON.stringify({
+            productImage: formData.cover,
+            videoUrl: formData.videoUrl,
+          }),
           starting_price: startPrice,
-          maximum_price: maxPrice,
+          maximum_price: null,
           verification_status: 'pending', // Re-verify updated listings
           updated_at: new Date().toISOString(),
         })
@@ -414,43 +414,19 @@ export default function EditBusinessPage() {
             <h2 className="text-xl font-bold text-gray-900">Pricing (Optional)</h2>
 
             <div>
-              <p className="text-sm text-gray-600 mb-4">
-                <strong>Pricing Tips:</strong> Enter your lowest service price in "Starting Price" and highest in "Maximum Price" (e.g., Le 5,000 - Le 50,000). Both fields are optional - leave blank if pricing varies.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="startingPrice" className="block text-sm font-medium text-gray-700 mb-1">
-                  Starting Price (e.g., Le 5,000)
-                </label>
-                <input
-                  id="startingPrice"
-                  name="startingPrice"
-                  type="number"
-                  value={formData.startingPrice}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium placeholder:text-gray-400"
-                  placeholder="5000"
-                />
-                <p className="text-xs text-gray-500 mt-1">Your lowest service price</p>
-              </div>
-
-              <div>
-                <label htmlFor="maximumPrice" className="block text-sm font-medium text-gray-700 mb-1">
-                  Maximum Price (e.g., Le 50,000)
-                </label>
-                <input
-                  id="maximumPrice"
-                  name="maximumPrice"
-                  type="number"
-                  value={formData.maximumPrice}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium placeholder:text-gray-400"
-                  placeholder="50000"
-                />
-                <p className="text-xs text-gray-500 mt-1">Your highest service price (must be ≥ starting price)</p>
-              </div>
+              <label htmlFor="startingPrice" className="block text-sm font-medium text-gray-700 mb-1">
+                Starting Price (Optional)
+              </label>
+              <input
+                id="startingPrice"
+                name="startingPrice"
+                type="number"
+                value={formData.startingPrice}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium placeholder:text-gray-400"
+                placeholder="e.g., 5000"
+              />
+              <p className="text-xs text-gray-500 mt-1">Leave blank if pricing varies or is negotiated directly.</p>
             </div>
           </div>
 
@@ -459,16 +435,23 @@ export default function EditBusinessPage() {
             <div>
               <div className="border-b pb-4 mb-6">
                 <h2 className="text-xl font-bold text-gray-900">Media Gallery</h2>
-                <p className="text-sm text-gray-500 mt-1">Upload professional photos</p>
+                <p className="text-sm text-gray-500 mt-1">Upload one product image and an optional promotional video</p>
               </div>
 
-              <div className="grid md:grid-cols-1 gap-6">
+              <div className="grid md:grid-cols-2 gap-6">
                 <MediaUpload
-                  label="Cover Image"
-                  placeholder="Professional business photo (JPG, PNG)"
+                  label="Product Image"
+                  placeholder="Product or service photo (JPG, PNG)"
                   acceptedTypes="image"
                   onUpload={(url) => setFormData({ ...formData, cover: url })}
                   initialUrl={formData.cover}
+                />
+                <MediaUpload
+                  label="Promotional Video (Optional)"
+                  placeholder="Service showcase or testimonial (MP4, WebM)"
+                  acceptedTypes="video"
+                  onUpload={(url) => setFormData({ ...formData, videoUrl: url })}
+                  initialUrl={formData.videoUrl}
                 />
               </div>
             </div>

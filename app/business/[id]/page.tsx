@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { getBusiness, getReviews, createReview } from '@/lib/api';
+import { getBusiness, getReviews, createReview, parseMedia } from '@/lib/api';
 import { createClient } from '@/lib/supabase';
 
 export default function BusinessPage() {
@@ -94,14 +94,37 @@ export default function BusinessPage() {
       ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
       : 0;
 
+  const whatsappNum = business.phone;
+
+  const getWhatsAppLink = (num: string) => {
+    if (!num) return '';
+    // Format number: remove all non-digit characters
+    let cleaned = num.replace(/[+\s\-()]/g, '');
+    // Handle leading zero for Sierra Leone
+    if (cleaned.startsWith('0')) {
+      cleaned = '232' + cleaned.slice(1);
+    }
+    // Prepend 232 if it's 8 or 9 digits and doesn't start with 232
+    if (cleaned.length === 8) {
+      cleaned = '232' + cleaned;
+    } else if (cleaned.length === 9 && !cleaned.startsWith('232')) {
+      cleaned = '232' + cleaned;
+    }
+    return `https://wa.me/${cleaned}?text=Hi,%20I%20found%20your%20business%20on%20SaloneBiz!`;
+  };
+
+  const whatsappLink = whatsappNum ? getWhatsAppLink(whatsappNum) : '';
+
+  const { productImage, videoUrl } = parseMedia(business.cover_image);
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Header with Cover Image */}
-      <div className="relative h-96 bg-gray-200 rounded-lg overflow-hidden mb-8">
+      {/* Header with Product Image */}
+      <div className="relative h-[300px] md:h-[500px] max-h-[500px] bg-gray-950 rounded-lg overflow-hidden mb-8">
         <img
-          src={business.cover_image || 'https://images.unsplash.com/photo-1495195134817-aeb325a55b65?w=800'}
+          src={productImage || 'https://images.unsplash.com/photo-1495195134817-aeb325a55b65?w=800'}
           alt={business.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
           <div className="flex items-end space-x-4">
@@ -115,17 +138,17 @@ export default function BusinessPage() {
       </div>
 
       {/* Video Section */}
-      {business.video_url && (
+      {videoUrl && (
         <div className="mb-8">
           <div className="relative w-full bg-black rounded-lg overflow-hidden shadow-lg" style={{ paddingBottom: '56.25%' }}>
             <video
-              src={business.video_url}
+              src={videoUrl}
               controls
-              className="absolute inset-0 w-full h-full"
-              poster={business.cover_image}
+              className="absolute inset-0 w-full h-full object-contain"
+              poster={productImage}
             />
           </div>
-          <p className="text-center text-gray-600 text-sm mt-2">Professional service showcase</p>
+          <p className="text-center text-gray-600 text-sm mt-2 font-medium">Promotional service showcase</p>
         </div>
       )}
 
@@ -298,6 +321,25 @@ export default function BusinessPage() {
                   </a>
                 </div>
               )}
+              {whatsappLink && (
+                <div className="pt-4 border-t border-gray-100 mt-4">
+                  <a
+                    href={whatsappLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center space-x-2 bg-[#25D366] hover:bg-[#20ba5a] text-white py-3 rounded-lg text-sm font-bold shadow-md hover:shadow-lg transition-all"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 448 512"
+                      className="w-5 h-5 fill-current"
+                    >
+                      <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
+                    </svg>
+                    <span>Chat on WhatsApp</span>
+                  </a>
+                </div>
+              )}
             </div>
           </div>
 
@@ -310,21 +352,12 @@ export default function BusinessPage() {
           )}
 
           {/* Pricing */}
-          {(business.starting_price || business.maximum_price) && (
+          {business.starting_price && (
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-xl font-bold text-gray-900 mb-4">💰 Pricing</h3>
-              <div className="space-y-2">
-                {business.starting_price && (
-                  <p className="text-gray-700">
-                    Starting: <span className="font-bold">Le {business.starting_price.toLocaleString()}</span>
-                  </p>
-                )}
-                {business.maximum_price && (
-                  <p className="text-gray-700">
-                    Up to: <span className="font-bold">Le {business.maximum_price.toLocaleString()}</span>
-                  </p>
-                )}
-              </div>
+              <p className="text-gray-700">
+                Starting at <span className="font-bold">LE {business.starting_price.toLocaleString()}</span>
+              </p>
             </div>
           )}
         </div>

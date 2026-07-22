@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
+import { parseMedia } from '@/lib/api';
 
 interface Business {
   id: string;
@@ -38,32 +39,47 @@ export default function AdminPage() {
 
   useEffect(() => {
     const checkAdminAccess = async () => {
+      setLoading(true);
       const supabase = createClient();
       if (!supabase) {
-        router.push('/login');
+        console.error('Supabase client failed to initialize in admin guard');
+        router.push('/admin-login');
         return;
       }
 
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push('/login');
-        return;
+      try {
+        console.log('Admin guard: Checking auth session using getUser...');
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+        if (userError || !user) {
+          console.error('Admin guard: Auth verification failed', userError);
+          router.push('/admin-login');
+          return;
+        }
+
+        console.log('Admin guard: Authenticated user ID:', user.id);
+
+        const { data: userData, error: dbError } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+
+        console.log('Admin guard: Database profile role read:', userData?.role, 'error:', dbError);
+
+        if (dbError || userData?.role !== 'admin') {
+          console.error('Admin guard: Access denied. Role is not admin.');
+          router.push('/admin-login');
+          return;
+        }
+
+        setUser(user);
+        setIsAdmin(true);
+        loadBusinesses();
+      } catch (err) {
+        console.error('Admin guard: Exception during access check', err);
+        router.push('/admin-login');
       }
-
-      const { data: userData } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', session.user.id)
-        .single();
-
-      if (userData?.role !== 'admin') {
-        router.push('/');
-        return;
-      }
-
-      setUser(session.user);
-      setIsAdmin(true);
-      loadBusinesses();
     };
 
     checkAdminAccess();
@@ -160,6 +176,17 @@ export default function AdminPage() {
   const filteredBusinesses = businesses.filter(
     b => filter === 'all' || b.verification_status === filter
   );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-gray-600 font-medium text-sm">Verifying administrator access...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAdmin) {
     return null;
@@ -331,20 +358,41 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Cover Image */}
-              {selectedBusiness.cover_image && (
-                <div>
-                  <p className="text-sm text-gray-600 mb-2">Cover Image</p>
-                  <img
-                    src={selectedBusiness.cover_image}
-                    alt={selectedBusiness.name}
-                    className="w-full h-48 object-cover rounded-lg"
-                    onError={(e) => {
-                      e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%23e5e7eb%22 width=%22400%22 height=%22300%22/%3E%3C/svg%3E';
-                    }}
-                  />
-                </div>
-              )}
+              {/* Media Section */}
+              {(() => {
+                const { productImage, videoUrl } = parseMedia(selectedBusiness.cover_image);
+                return (
+                  <div className="space-y-4">
+                    {productImage && (
+                      <div>
+                        <p className="text-sm text-gray-600 mb-2">Product Image</p>
+                        <img
+                          src={productImage}
+                          alt={selectedBusiness.name}
+                          className="w-full h-48 object-cover rounded-lg"
+                          onError={(e) => {
+                            e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%23e5e7eb%22 width=%22400%22 height=%22300%22/%3E%3C/svg%3E';
+                          }}
+                        />
+                      </div>
+                    )}
+
+                    {videoUrl && (
+                      <div>
+                        <p className="text-sm text-gray-600 mb-2">Promotional Video</p>
+                        <div className="relative w-full bg-black rounded-lg overflow-hidden shadow-sm" style={{ paddingBottom: '56.25%' }}>
+                          <video
+                            src={videoUrl}
+                            controls
+                            className="absolute inset-0 w-full h-full object-contain"
+                            poster={productImage}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Status */}
               <div>

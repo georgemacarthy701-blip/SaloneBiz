@@ -121,3 +121,21 @@ export async function getCategories() {
   if (error) throw new Error(error.message);
   return data;
 }
+
+export function parseMedia(coverImage: string) {
+  if (coverImage && coverImage.trim().startsWith('{')) {
+    try {
+      const parsed = JSON.parse(coverImage);
+      return {
+        productImage: parsed.productImage || '',
+        videoUrl: parsed.videoUrl || ''
+      };
+    } catch (e) {
+      // fallback
+    }
+  }
+  return {
+    productImage: coverImage || '',
+    videoUrl: ''
+  };
+}
