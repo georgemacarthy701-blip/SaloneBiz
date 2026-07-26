@@ -19,7 +19,6 @@ export function Footer() {
 
   const platform = [
     { name: 'Browse Listings', href: '/listings' },
-    { name: 'Admin Portal', href: '/admin-login' },
   ];
 
   return (
