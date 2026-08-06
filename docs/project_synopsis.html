@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Synopsis - SaloneBiz</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Mermaid.js Library CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      securityLevel: 'loose',
+      flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+    });
+  </script>
+
+  <style>
+    /* Premium Modern Stylesheet */
+    :root {
+      --primary: #1e3a8a;
+      --primary-dark: #1e40af;
+      --secondary: #4f46e5;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --bg-main: #f8fafc;
+      --border-color: #e2e8f0;
+      --accent: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-main);
+      background-color: var(--bg-main);
+      line-height: 1.6;
+      padding: 3rem 1.5rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 4rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
+    }
+
+    /* Cover / Header Info */
+    .header-wrapper {
+      text-align: center;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 2.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.25rem;
+      color: var(--secondary);
+      font-weight: 600;
+      margin-bottom: 2rem;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-cols: 1fr;
+      gap: 1rem;
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: left;
+      background: var(--bg-main);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px dashed var(--border-color);
+      font-size: 0.95rem;
+    }
+
+    .meta-item {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .meta-label {
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .meta-value {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* Headings & Typo */
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      color: var(--primary);
+      margin-top: 3rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      color: var(--secondary);
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      page-break-after: avoid;
+    }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: var(--text-muted);
+      text-align: justify;
+    }
+
+    strong {
+      color: var(--text-main);
+    }
+
+    ul, ol {
+      margin-bottom: 1.5rem;
+      padding-left: 1.5rem;
+      color: var(--text-muted);
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    /* Comparison Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+      page-break-inside: avoid;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--bg-main);
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(248, 250, 252, 0.5);
+    }
+
+    /* Diagrams & Code Blocks */
+    .mermaid {
+      background-color: var(--bg-main);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      margin: 2rem 0;
+      display: flex;
+      justify-content: center;
+      page-break-inside: avoid;
+    }
+
+    pre {
+      background-color: var(--bg-main);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      page-break-inside: avoid;
+    }
+
+    code {
+      font-family: Consolas, Monaco, "Andale Mono", monospace;
+      font-size: 0.875rem;
+      color: #0f172a;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      background-color: #d1fae5;
+      color: #065f46;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* Print Specific Media Styles */
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        font-size: 11pt !important;
+        line-height: 1.5 !important;
+      }
+
+      .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      .title {
+        color: #000000 !important;
+        font-size: 24pt !important;
+      }
+
+      .subtitle {
+        color: #333333 !important;
+        font-size: 14pt !important;
+      }
+
+      h2, h3 {
+        color: #000000 !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+        border-bottom-color: #000000 !important;
+      }
+
+      p, li, th, td, code {
+        color: #000000 !important;
+      }
+
+      table, pre, blockquote, img, svg, .mermaid, .meta-grid {
+        page-break-inside: avoid !important;
+      }
+
+      .page-break {
+        page-break-before: always !important;
+      }
+
+      .meta-grid {
+        background: #ffffff !important;
+        border-style: solid !important;
+      }
+
+      .mermaid {
+        background: #ffffff !important;
+        border: 1px solid #000000 !important;
+      }
+
+      pre {
+        background: #ffffff !important;
+        border: 1px solid #000000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Cover/Header Information -->
+    <div class="header-wrapper">
+      <h1 class="title">SaloneBiz: A Digital Business Directory and Marketplace Platform for Sierra Leone</h1>
+      <p class="subtitle">PROJECT SYNOPSIS</p>
+      
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Submitted By:</span>
+          <span class="meta-value">George Alvin Macarthy</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Enrolment No.:</span>
+          <span class="meta-value">[Insert Enrolment No.]</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Guide/Supervisor:</span>
+          <span class="meta-value">[Insert Supervisor Name]</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Institution:</span>
+          <span class="meta-value">IMATT College, Freetown, Sierra Leone</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. INTRODUCTION -->
+    <section>
+      <h2>1. INTRODUCTION</h2>
+      <h3>Problem Statement</h3>
+      <p>In Sierra Leone, the local commerce sector faces a major visibility challenge. Small, medium, and large service providers (such as local tech firms, automotive workshops, construction contractors, medical consultants, hotels, and retail shops) rely heavily on word-of-mouth recommendations. Public consumers lack a centralized, verified digital reference to discover, contact, and check reviews for registered businesses. Conversely, local business owners do not have a cost-effective, premium digital medium to showcase their services, publish promotional media, and build client trust. Existing manual practices lead to fragmented consumer searches, high verification overhead, and low digital marketplace participation.</p>
+      
+      <h3>Proposed Solution</h3>
+      <p><strong>SaloneBiz</strong> is a responsive, single-page-application-driven business directory and marketplace platform engineered to bridge the gap between service providers and local consumers in Sierra Leone. Built on the Next.js App Router architecture and backed by Supabase Serverless Postgres, the system allows business owners to register professional listings, upload promotional images/videos via Cloudinary CDN, and include contact channels (such as phone numbers and direct WhatsApp chat links). It provides consumers with interactive filters, reviews, and ratings.</p>
+      
+      <h3>Significance</h3>
+      <p>By digitizing the listing verification workflow through a secure Admin Portal, SaloneBiz ensures the credibility of listed providers. The integration of direct WhatsApp links matches the dominant smartphone communication patterns in Sierra Leone, offering a friction-free communication channel. This platform promotes digital inclusivity, increases merchant earnings, and reduces search costs for consumers in the local economy.</p>
+    </section>
+
+    <!-- 2. OBJECTIVES -->
+    <section class="page-break">
+      <h2>2. OBJECTIVES</h2>
+      <h3>Primary Objective</h3>
+      <p>To design, develop, and deploy a secure, responsive, and verified business directory and marketplace platform that empowers service providers in Sierra Leone to list their businesses online and allows consumers to easily discover and verify local services.</p>
+      
+      <h3>Secondary Objectives</h3>
+      <ul>
+        <li><strong>Authentication & Authorization:</strong> Implement robust Role-Based Access Control (RBAC) separating public users, business owners, and administrators.</li>
+        <li><strong>Media Optimization:</strong> Streamline promotional image and video uploads utilizing Cloudinary's unsigned presets and responsive CDN delivery.</li>
+        <li><strong>Direct Interaction:</strong> Integrate instant, formatted WhatsApp link generation using standard phone numbers to bypass traditional, costly communication barriers.</li>
+        <li><strong>Administrative Control:</strong> Create a clean admin review dashboard enabling administrators to approve, reject, or comment on registered listing drafts before they are visible to the public.</li>
+      </ul>
+    </section>
+
+    <!-- 3. LITERATURE REVIEW -->
+    <section>
+      <h2>3. LITERATURE REVIEW</h2>
+      <h3>Comparison Table of Existing Systems</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Feature / Criteria</th>
+            <th>Yellow Pages (Traditional)</th>
+            <th>Facebook Pages / Groups</th>
+            <th>SaloneBiz (Proposed)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Centralization</strong></td>
+            <td>Low (Spread across physical print / legacy sites)</td>
+            <td>Low (Scattered across social feeds)</td>
+            <td><span class="badge">High</span> (Single dedicated portal)</td>
+          </tr>
+          <tr>
+            <td><strong>Verification & Trust</strong></td>
+            <td>Manual, static (High outdated listings)</td>
+            <td>No formal verification (High spam profiles)</td>
+            <td><span class="badge">High</span> (Mandatory admin review queue)</td>
+          </tr>
+          <tr>
+            <td><strong>Media Richness</strong></td>
+            <td>Text only / Static images</td>
+            <td>High (User upload, unoptimized size)</td>
+            <td><span class="badge">High</span> (Optimized Cloudinary images/videos)</td>
+          </tr>
+          <tr>
+            <td><strong>Local Integration</strong></td>
+            <td>Phone numbers only</td>
+            <td>Direct messaging (Requires Facebook account)</td>
+            <td><span class="badge">WhatsApp Direct Link & Direct Calls</span></td>
+          </tr>
+          <tr>
+            <td><strong>Searchability</strong></td>
+            <td>Poor (Clunky alphabetical indexes)</td>
+            <td>Limited to keyword algorithms</td>
+            <td><span class="badge">High</span> (Structured category filters)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Research Gap</h3>
+      <p>Existing social media pages and legacy directory platforms lack mandatory, structured admin verification workflows, resulting in listings that are either outdated or fraudulent. Furthermore, legacy systems do not offer optimized media pipelines or instant messaging fallbacks tailored for mobile-first developing markets like Sierra Leone. SaloneBiz fills this research gap by providing a verification pipeline, structural categorization, and direct WhatsApp integrations.</p>
+    </section>
+
+    <!-- 4. SYSTEM REQUIREMENTS -->
+    <section class="page-break">
+      <h2>4. SYSTEM REQUIREMENTS</h2>
+      <h3>Functional Requirements</h3>
+      <ol>
+        <li><strong>User Authentication:</strong> Sign up, sign in, and session management using Supabase Auth.</li>
+        <li><strong>Profile Creation:</strong> Differentiated user dashboards for managing business listings and submitting client reviews.</li>
+        <li><strong>Listing Form:</strong> Upload logo, product showcase image, promotional video (Cloudinary), specify locations, email, phone, business hours, and starting price.</li>
+        <li><strong>Admin Queue:</strong> Validation queues displaying pending listing details, allowing comments, and changing verification status (approved, rejected, pending).</li>
+        <li><strong>Rating & Reviews:</strong> Public users can submit numeric ratings (1-5 stars) and comments on approved business profiles.</li>
+      </ol>
+
+      <h3>Non-Functional Requirements</h3>
+      <ul>
+        <li><strong>Security:</strong> Secure authorization using client-side router guards, database Row Level Security (RLS) policies, and input sanitation.</li>
+        <li><strong>Responsiveness:</strong> Fluid grid columns and responsive visual styling (object-contain aspect ratios) optimized for both desktop and mobile screens.</li>
+        <li><strong>SEO Protection:</strong> Automatic search crawler restriction (noindex, nofollow) for administrative paths.</li>
+        <li><strong>Performance:</strong> Efficient client state queries utilizing cached Supabase singletons to prevent resource overhead.</li>
+      </ul>
+
+      <h3>Hardware & Software Requirements</h3>
+      <ul>
+        <li><strong>Development Environment OS:</strong> Windows 10/11</li>
+        <li><strong>Runtime Environment:</strong> Node.js (v18+) & NPM</li>
+        <li><strong>Framework & Libraries:</strong> Next.js (App Router), Tailwind CSS, TypeScript, Supabase Client SDK, Cloudinary Upload API</li>
+        <li><strong>Cloud Backend:</strong> Supabase (Database & Authentication), Cloudinary (CDN Media Hosting)</li>
+      </ul>
+    </section>
+
+    <!-- 5. SYSTEM ANALYSIS -->
+    <section class="page-break">
+      <h2>5. SYSTEM ANALYSIS</h2>
+      
+      <h3>DFD Level 0 (Context Diagram)</h3>
+      <pre class="mermaid">
+        graph TD
+            User([Public User]) -->|Browse/Search listings, View reviews| System[SaloneBiz System]
+            System -->|Display listings, reviews| User
+            Owner([Business Owner]) -->|Register, Create/Edit service profiles| System
+            System -->|Auth token, Listing status| Owner
+            Admin([Administrator]) -->|Approve/Reject listings, Manage users| System
+            System -->|Review alerts, verification queues| Admin
+      </pre>
+
+      <h3>DFD Level 1 (Data Flow Diagram - Processes)</h3>
+      <pre class="mermaid">
+        graph TD
+            subgraph System Processes
+                P1[1.0 User Authentication]
+                P2[2.0 Listing Management]
+                P3[3.0 Review System]
+                P4[4.0 Admin Operations]
+            end
+            
+            DB1[(users Table)]
+            DB2[(businesses Table)]
+            DB3[(reviews Table)]
+            
+            Owner([Business Owner]) -->|Login Credentials| P1
+            P1 -->|Read/Write Session| DB1
+            
+            Owner -->|Listing Data & Media| P2
+            P2 -->|Save/Update Listing| DB2
+            
+            User([Public User]) -->|Submit Review| P3
+            P3 -->|Save Review| DB3
+            P3 -->|Fetch Reviews| DB3
+            
+            Admin([Admin User]) -->|Approve/Reject Action| P4
+            P4 -->|Update Status| DB2
+      </pre>
+
+      <h3 class="page-break">DFD Level 2 (Listing Creation & Approval Detail)</h3>
+      <pre class="mermaid">
+        graph TD
+            Owner([Business Owner]) -->|Form Submit: text & media| P2_1[2.1 Validate Input & Prices]
+            P2_1 -->|Valid Payload| P2_2[2.2 Cloudinary Media Upload]
+            P2_2 -->|URLs returned| P2_3[2.3 Insert Draft into DB]
+            P2_3 -->|Draft: pending| DB[(businesses Table)]
+            
+            Admin([Administrator]) -->|Fetch pending queue| P2_4[2.4 Review Listing Details]
+            DB -->|Read draft| P2_4
+            P2_4 -->|Approve/Reject decision| P2_5[2.5 Update Status & Notify]
+            P2_5 -->|Set status: approved/rejected| DB
+      </pre>
+
+      <h3>Entity Relationship Diagram (ERD)</h3>
+      <pre class="mermaid">
+        erDiagram
+            users ||--o{ businesses : owns
+            users ||--o{ reviews : writes
+            categories ||--o{ businesses : classifies
+            businesses ||--o{ reviews : receives
+            
+            users {
+                uuid id PK
+                text email
+                text role
+                timestamp created_at
+            }
+            categories {
+                text id PK
+                text name
+            }
+            businesses {
+                uuid id PK
+                text name
+                text category FK
+                text logo
+                numeric rating
+                integer review_count
+                text location
+                text address
+                text phone
+                text email
+                text website
+                text description
+                text short_description
+                numeric starting_price
+                numeric maximum_price
+                text price_range_label
+                text price_range_key
+                boolean featured
+                text status
+                text hours
+                text cover_image
+                uuid owner_id FK
+                text verification_status
+                text admin_notes
+                timestamp verified_at
+                uuid verified_by FK
+                timestamp created_at
+                timestamp updated_at
+            }
+            reviews {
+                uuid id PK
+                uuid business_id FK
+                uuid user_id FK
+                integer rating
+                text comment
+                timestamp created_at
+            }
+      </pre>
+
+      <h3 class="page-break">Use Case Diagram</h3>
+      <pre class="mermaid">
+        leftToRightDirection
+        graph TD
+            PublicUser((Public User))
+            BizOwner((Business Owner))
+            AdminUser((Admin User))
+            
+            UC1(Browse & Search Listings)
+            UC2(View Reviews & Ratings)
+            UC3(Create/Register Account)
+            UC4(Add/Edit Business Listings)
+            UC5(Upload Images & Videos)
+            UC6(Submit Customer Reviews)
+            UC7(Verify Business Listings)
+            UC8(Manage Users & System Roles)
+            
+            PublicUser --> UC1
+            PublicUser --> UC2
+            PublicUser --> UC3
+            PublicUser --> UC6
+            
+            BizOwner --> UC3
+            BizOwner --> UC4
+            BizOwner --> UC5
+            BizOwner --> UC1
+            
+            AdminUser --> UC7
+            AdminUser --> UC8
+            AdminUser --> UC1
+      </pre>
+
+      <h3>Gantt Chart (Project Schedule)</h3>
+      <pre class="mermaid">
+        gantt
+            title SaloneBiz Project Timeline
+            dateFormat  YYYY-MM-DD
+            section Requirement Analysis & Design
+            System Specifications & DFDs       :done,    des1, 2026-06-01, 2026-06-10
+            Database Normalization & ERD Schema :done,    des2, 2026-06-11, 2026-06-15
+            section Development Phase
+            Supabase Setup & Auth Logic        :done,    dev1, 2026-06-16, 2026-06-25
+            Add/Edit Listing Form & Validation  :done,    dev2, 2026-06-26, 2026-07-05
+            Cloudinary Integration & Card UI   :done,    dev3, 2026-07-06, 2026-07-15
+            section Security & Route Guarding
+            Client-Side Guard Verification     :done,    sec1, 2026-07-16, 2026-07-22
+            RLS & RBAC Controls                :done,    sec2, 2026-07-23, 2026-07-30
+            section Testing & Deployment
+            Quality Assurance & Bug Fixes      :done,    test1, 2026-08-01, 2026-08-04
+            Final Documentation & Vercel Push  :active,  test2, 2026-08-05, 2026-08-07
+      </pre>
+
+      <h3 class="page-break">System Architecture</h3>
+      <pre class="mermaid">
+        graph TD
+            Client[Client Browser: React / Next.js / Tailwind CSS]
+            
+            subgraph NextJS_App_Router [Next.js App Server]
+                Middleware[Client-side Route Guard / useEffect Session Sync]
+                Pages[Dynamic Listing Pages, Admin Portal, Creation Form]
+            end
+            
+            subgraph Backend_Services [Supabase Backend & Media Cloud]
+                Auth[Supabase Auth Service]
+                Database[(Supabase PostgreSQL Database)]
+                RLS[Row Level Security & Role Checks]
+                Cloudinary[Cloudinary CDN Media Server]
+            end
+            
+            Client -->|Interacts| Pages
+            Pages -->|Route Protection| Middleware
+            Pages -->|Authentication API| Auth
+            Pages -->|SQL Query / RPC| Database
+            Database -->|Enforce Policies| RLS
+            Pages -->|Secure Upload| Cloudinary
+      </pre>
+    </section>
+
+    <!-- 6. SYSTEM DESIGN -->
+    <section class="page-break">
+      <h2>6. SYSTEM DESIGN</h2>
+      <h3>Normalized SQL Schemas</h3>
+      <pre><code>-- 1. Users Profile Table
+CREATE TABLE public.users (
+  id UUID PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'business_owner', 'admin')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Categories Classification Table
+CREATE TABLE public.categories (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL
+);
+
+-- 3. Businesses Directory Table
+CREATE TABLE public.businesses (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  category TEXT NOT NULL REFERENCES public.categories(id),
+  logo TEXT NOT NULL,
+  rating NUMERIC(3,1) DEFAULT 0,
+  review_count INTEGER DEFAULT 0,
+  location TEXT NOT NULL,
+  address TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  email TEXT NOT NULL,
+  website TEXT,
+  description TEXT NOT NULL,
+  short_description TEXT,
+  starting_price NUMERIC,
+  maximum_price NUMERIC,
+  price_range_label TEXT,
+  price_range_key TEXT CHECK (price_range_key IN ('low', 'medium', 'high')),
+  featured BOOLEAN DEFAULT FALSE,
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'pending')),
+  hours TEXT NOT NULL,
+  cover_image TEXT NOT NULL, -- Serialized JSON for Cloudinary image & video details
+  owner_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  verification_status TEXT NOT NULL DEFAULT 'pending' CHECK (verification_status IN ('pending', 'approved', 'rejected')),
+  admin_notes TEXT,
+  verified_at TIMESTAMP WITH TIME ZONE,
+  verified_by UUID REFERENCES public.users(id),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 4. Reviews Table
+CREATE TABLE public.reviews (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  business_id UUID NOT NULL REFERENCES public.businesses(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  comment TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);</code></pre>
+
+      <h3>Module Breakdown</h3>
+      <ul>
+        <li><strong>Authentication Module:</strong> Manages Supabase signup/login, session synchronization, and caching of the client singleton to avoid multi-instance execution alerts.</li>
+        <li><strong>Listing Module:</strong> Controls directory listing submissions. Translates price fields to a simplified Starting Price field (Starting Price (Optional)), maps media schemas to JSON configurations inside the cover_image field, and triggers admin re-verification updates upon modification.</li>
+        <li><strong>Verification Module:</strong> Runs client-side useEffect authentication checks to authorize pages (/admin and /admin-dashboard). Keeps pages hidden and shows loading states until authentication matches 'admin'.</li>
+        <li><strong>Review Module:</strong> Allows registered consumers to submit comments and ratings. Computes reviews and average ratings on listing display pages.</li>
+      </ul>
+
+      <h3>UI/UX Wireframe Strategy</h3>
+      <p>The user interface is designed with a premium, responsive architecture utilizing Tailwind CSS. It incorporates unified border cards (rounded-xl border border-gray-200 shadow-sm) that feature an object-contain aspect ratio for media to ensure wide landscape and tall portrait photos align correctly. It also integrates high-contrast green WhatsApp contact links and stackable flex headers (flex-col sm:flex-row) ensuring a responsive experience across all screen sizes.</p>
+    </section>
+
+    <!-- 7. PERT CHART -->
+    <section class="page-break">
+      <h2>7. PERT CHART</h2>
+      <pre class="mermaid">
+        stateDiagram-v2
+            direction LR
+            [*] --> ReqAnalysis
+            ReqAnalysis --> DatabaseDesign : 5 days
+            DatabaseDesign --> SetupSupabase : 3 days
+            SetupSupabase --> AuthModule : 4 days
+            SetupSupabase --> FormModule : 7 days
+            AuthModule --> Integration : 5 days
+            FormModule --> Integration : 5 days
+            Integration --> CloudinaryMedia : 6 days
+            CloudinaryMedia --> RouteGuards : 4 days
+            RouteGuards --> ClientTesting : 5 days
+            ClientTesting --> DeploymentDocs : 3 days
+            DeploymentDocs --> [*]
+      </pre>
+    </section>
+
+    <!-- 8. SECURITY MEASURES -->
+    <section>
+      <h2>8. SECURITY MEASURES</h2>
+      <h3>Role-Based Access Control (RBAC) & Client Guards</h3>
+      <p>Access limits are enforced client-side on administrative pages. By querying supabase.auth.getUser(), the system evaluates whether the active session belongs to an authorized admin profile before rendering administration dashboard metrics, routing failures back to /admin-login immediately.</p>
+      
+      <h3>Row Level Security (RLS)</h3>
+      <p>The database enforces strict RLS policies on tables to ensure business owners can only update their own listings, admins can review all listings, and public viewers can retrieve approved active listings.</p>
+      
+      <h3>Cloudinary API Protection</h3>
+      <p>Image and video hosting are handled using unsigned upload presets directly from client forms to Cloudinary, ensuring that sensitive Cloudinary API secret credentials remain secure on the server side and are never exposed in browser requests.</p>
+      
+      <h3>Input Sanitization</h3>
+      <p>Text fields, descriptions, and comments are sanitized prior to database submission to prevent Cross-Site Scripting (XSS) and injection vulnerabilities.</p>
+    </section>
+
+    <!-- 9. TESTING STRATEGY -->
+    <section class="page-break">
+      <h2>9. TESTING STRATEGY</h2>
+      <h3>Unit Testing</h3>
+      <p>Core functions like phone number normalization (cleaning non-digits, prepending 232, and stripping local leading zeros for the WhatsApp URL) are isolated and tested to ensure correct outputs across diverse mobile input variations.</p>
+      
+      <h3>Integration Testing</h3>
+      <p>Validates database writes when submitting the listing form. Verifies that the JSON serialization of image/video data within the single cover_image field operates correctly and preserves legacy, plain-image URLs.</p>
+      
+      <h3>Role Access Control Testing</h3>
+      <p>Tests navigation guarding behavior. Confirms that logging in with standard 'user' or 'business_owner' accounts successfully hides the "Admin Panel" link in the navigation header and denies access to /admin routes.</p>
+      
+      <h3>Mobile Responsiveness Testing</h3>
+      <p>Verifies media fitting and button wrapping. Confirms that elements stack properly on smaller viewports and action buttons (like "+ Add Business") remain aligned inside responsive boundaries.</p>
+    </section>
+
+    <!-- 10. FUTURE SCOPE -->
+    <section>
+      <h2>10. FUTURE SCOPE</h2>
+      <ul>
+        <li><strong>Mobile Money Integration:</strong> Introduce subscription plans for featured listings, allowing owners to pay using local mobile money APIs (Orange Money, Afrimoney).</li>
+        <li><strong>Geolocation Map Directory:</strong> Integrate leaflet maps or Mapbox APIs to display real-time physical locations and navigation routes directly on listing profile detail cards.</li>
+        <li><strong>Mobile Native Application:</strong> Utilize React Native or Flutter to compile Android and iOS versions of the directory for offline search caching and push notifications.</li>
+      </ul>
+    </section>
+
+    <!-- 11. REFERENCES -->
+    <section class="page-break">
+      <h2>11. REFERENCES</h2>
+      <ol>
+        <li>Sommerville, I. (2015). <em>Software Engineering</em>. Pearson.</li>
+        <li>Elmasri, R., & Navathe, S. B. (2015). <em>Fundamentals of Database Systems</em>. Pearson.</li>
+        <li>Supabase Docs. (2026). <em>Row Level Security Policies</em>. Retrieved from https://supabase.com/docs</li>
+        <li>Next.js Documentation. (2026). <em>Routing & Rendering Architecture</em>. Retrieved from https://nextjs.org/docs</li>
+        <li>Cloudinary. (2026). <em>Direct Image and Video Uploading API</em>. Retrieved from https://cloudinary.com/documentation</li>
+      </ol>
+    </section>
+  </div>
+
+</body>
+</html>
