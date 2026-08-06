@@ -563,21 +563,21 @@
       <h3>Gantt Chart (Project Schedule)</h3>
       <pre class="mermaid">
         gantt
-            title SaloneBiz Project Timeline
-            dateFormat  YYYY-MM-DD
-            section Requirement Analysis & Design
-            System Specifications & DFDs       :done,    des1, 2026-06-01, 2026-06-10
-            Database Normalization & ERD Schema :done,    des2, 2026-06-11, 2026-06-15
-            section Development Phase
-            Supabase Setup & Auth Logic        :done,    dev1, 2026-06-16, 2026-06-25
-            Add/Edit Listing Form & Validation  :done,    dev2, 2026-06-26, 2026-07-05
-            Cloudinary Integration & Card UI   :done,    dev3, 2026-07-06, 2026-07-15
-            section Security & Route Guarding
-            Client-Side Guard Verification     :done,    sec1, 2026-07-16, 2026-07-22
-            RLS & RBAC Controls                :done,    sec2, 2026-07-23, 2026-07-30
-            section Testing & Deployment
-            Quality Assurance & Bug Fixes      :done,    test1, 2026-08-01, 2026-08-04
-            Final Documentation & Vercel Push  :active,  test2, 2026-08-05, 2026-08-07
+            title SaloneBiz Project Development Timeline
+            dateFormat YYYY-MM-DD
+            axisFormat %b %Y
+            section Phase 1: Planning
+                Requirements and Specifications :a1, 2026-03-01, 30d
+            section Phase 2: Design
+                System Architecture and ERD     :a2, 2026-04-01, 30d
+            section Phase 3: Backend
+                Supabase DB and Auth Setup      :a3, 2026-04-15, 45d
+            section Phase 4: Frontend
+                Next.js and UI Development      :a4, 2026-05-15, 60d
+            section Phase 5: Security
+                RLS and RBAC Access Controls    :a5, 2026-07-01, 30d
+            section Phase 6: QA and Launch
+                Testing and Vercel Deployment   :a6, 2026-07-15, 30d
       </pre>
 
       <h3 class="page-break">System Architecture</h3>
