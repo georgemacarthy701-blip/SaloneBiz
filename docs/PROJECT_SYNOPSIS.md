@@ -233,33 +233,33 @@ The project scheduling outlines key milestones from requirement gathering to dep
 
 ```mermaid
 gantt
-    title SaloneBiz Project Development Timeline
+    title SaloneBiz Project Development Timeline (June – September 2026)
     dateFormat YYYY-MM-DD
     axisFormat %b %Y
-    section Phase 1: Planning
-        Requirements and Specifications :a1, 2026-03-01, 30d
+    section Phase 1: Planning & Specs
+        Requirements and Specifications :a1, 2026-06-10, 14d
     section Phase 2: Design
-        System Architecture and ERD     :a2, 2026-04-01, 30d
+        System Architecture and ERD     :a2, 2026-06-25, 14d
     section Phase 3: Backend
-        Supabase DB and Auth Setup      :a3, 2026-04-15, 45d
+        Supabase DB and Auth Setup      :a3, 2026-07-09, 21d
     section Phase 4: Frontend
-        Next.js and UI Development      :a4, 2026-05-15, 60d
+        Next.js and UI Development      :a4, 2026-07-30, 21d
     section Phase 5: Security
-        RLS and RBAC Access Controls    :a5, 2026-07-01, 30d
+        RLS and RBAC Access Controls    :a5, 2026-08-20, 14d
     section Phase 6: QA and Launch
-        Testing and Vercel Deployment   :a6, 2026-07-15, 30d
+        Testing and Vercel Deployment   :a6, 2026-09-03, 14d
 ```
 
-### Project Development Timeline (6-Month Schedule)
+### Project Development Timeline (June – September 2026)
 
 | Project Phase | Core Deliverables & Tasks | Duration | Timeline |
 | :--- | :--- | :--- | :--- |
-| **Phase 1: Planning** | Requirements Gathering & Functional Specifications | 1 Month | March 2026 |
-| **Phase 2: Design** | System Architecture, DFDs & Database ERD Design | 1 Month | April 2026 |
-| **Phase 3: Backend Setup** | Supabase PostgreSQL Schemas, Auth & Cloudinary Integration | 1.5 Months | April – May 2026 |
-| **Phase 4: Frontend Build** | Next.js App Router, Tailwind UI & Business Listings Engine | 2 Months | May – July 2026 |
-| **Phase 5: Security & Admin** | Row-Level Security (RLS), RBAC Admin Dashboard & Sentry | 1 Month | July 2026 |
-| **Phase 6: QA & Deployment** | System Testing, Mobile Optimization, Vercel Edge Push & Docs | 1 Month | August 2026 |
+| **Phase 1: Planning & Specs** | Requirements Gathering & Functional Specifications | 2 Weeks | June 10 – June 24, 2026 |
+| **Phase 2: System Design** | System Architecture, DFDs & Database ERD Schema | 2 Weeks | June 25 – July 08, 2026 |
+| **Phase 3: Backend & DB Setup** | Supabase PostgreSQL Schemas, Auth & Cloudinary Integration | 3 Weeks | July 09 – July 29, 2026 |
+| **Phase 4: Frontend Development** | Next.js App Router, Tailwind UI & Business Listings Engine | 3 Weeks | July 30 – August 19, 2026 |
+| **Phase 5: Security & Admin** | Row-Level Security (RLS), RBAC Admin Dashboard & Sentry | 2 Weeks | August 20 – September 02, 2026 |
+| **Phase 6: QA & Submission** | Testing, Mobile Optimization, Documentation & Final Submission | 2 Weeks | September 03 – Mid-September 2026 |
 
 ### System Architecture
 The application runs on a three-tier serverless decoupled architecture.
