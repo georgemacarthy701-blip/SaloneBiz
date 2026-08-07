@@ -250,6 +250,17 @@ gantt
         Testing and Vercel Deployment   :a6, 2026-07-15, 30d
 ```
 
+### Project Development Timeline (6-Month Schedule)
+
+| Project Phase | Core Deliverables & Tasks | Duration | Timeline |
+| :--- | :--- | :--- | :--- |
+| **Phase 1: Planning** | Requirements Gathering & Functional Specifications | 1 Month | March 2026 |
+| **Phase 2: Design** | System Architecture, DFDs & Database ERD Design | 1 Month | April 2026 |
+| **Phase 3: Backend Setup** | Supabase PostgreSQL Schemas, Auth & Cloudinary Integration | 1.5 Months | April – May 2026 |
+| **Phase 4: Frontend Build** | Next.js App Router, Tailwind UI & Business Listings Engine | 2 Months | May – July 2026 |
+| **Phase 5: Security & Admin** | Row-Level Security (RLS), RBAC Admin Dashboard & Sentry | 1 Month | July 2026 |
+| **Phase 6: QA & Deployment** | System Testing, Mobile Optimization, Vercel Edge Push & Docs | 1 Month | August 2026 |
+
 ### System Architecture
 The application runs on a three-tier serverless decoupled architecture.
 
