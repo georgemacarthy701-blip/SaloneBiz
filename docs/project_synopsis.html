@@ -566,73 +566,53 @@
             AdminUser --> UC1
       </pre>
 
-      <h3>Gantt Chart (Project Schedule)</h3>
-      <pre class="mermaid">
-        gantt
-            title SaloneBiz Project Development Timeline
-            dateFormat YYYY-MM-DD
-            axisFormat %b %Y
-            section Phase 1: Planning
-                Requirements and Specifications :a1, 2026-03-01, 30d
-            section Phase 2: Design
-                System Architecture and ERD     :a2, 2026-04-01, 30d
-            section Phase 3: Backend
-                Supabase DB and Auth Setup      :a3, 2026-04-15, 45d
-            section Phase 4: Frontend
-                Next.js and UI Development      :a4, 2026-05-15, 60d
-            section Phase 5: Security
-                RLS and RBAC Access Controls    :a5, 2026-07-01, 30d
-            section Phase 6: QA and Launch
-                Testing and Vercel Deployment   :a6, 2026-07-15, 30d
-      </pre>
-
-      <div class="timeline-container">
-        <h3>SaloneBiz Project Development Timeline (6-Month Schedule)</h3>
-        <table>
+      <div class="timeline-container" style="margin: 20px 0; font-family: sans-serif;">
+        <h3 style="margin-bottom: 15px; color: #1e293b;">SaloneBiz Project Development Timeline (6-Month Schedule)</h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; border: 1px solid #cbd5e1;">
           <thead>
-            <tr>
-              <th>Project Phase</th>
-              <th>Core Deliverables & Tasks</th>
-              <th>Duration</th>
-              <th>Timeline</th>
+            <tr style="background-color: #0f172a; color: #ffffff;">
+              <th style="padding: 12px; border: 1px solid #334155;">Project Phase</th>
+              <th style="padding: 12px; border: 1px solid #334155;">Core Deliverables & Tasks</th>
+              <th style="padding: 12px; border: 1px solid #334155;">Duration</th>
+              <th style="padding: 12px; border: 1px solid #334155;">Timeline</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><strong>Phase 1: Planning</strong></td>
-              <td>Requirements Gathering & Functional Specifications</td>
-              <td>1 Month</td>
-              <td>March 2026</td>
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 10px; border: 1px solid #cbd5e1; font-weight: bold;">Phase 1: Planning</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">Requirements Gathering & Functional Specifications</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">1 Month</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">March 2026</td>
             </tr>
             <tr>
-              <td><strong>Phase 2: Design</strong></td>
-              <td>System Architecture, DFDs & Database ERD Design</td>
-              <td>1 Month</td>
-              <td>April 2026</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1; font-weight: bold;">Phase 2: Design</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">System Architecture, DFDs & Database ERD Design</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">1 Month</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">April 2026</td>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 10px; border: 1px solid #cbd5e1; font-weight: bold;">Phase 3: Backend Setup</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">Supabase PostgreSQL Schemas, Auth & Cloudinary Integration</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">1.5 Months</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">April – May 2026</td>
             </tr>
             <tr>
-              <td><strong>Phase 3: Backend Setup</strong></td>
-              <td>Supabase PostgreSQL Schemas, Auth & Cloudinary Integration</td>
-              <td>1.5 Months</td>
-              <td>April – May 2026</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1; font-weight: bold;">Phase 4: Frontend Build</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">Next.js App Router, Tailwind UI & Business Listings Engine</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">2 Months</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">May – July 2026</td>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 10px; border: 1px solid #cbd5e1; font-weight: bold;">Phase 5: Security & Admin</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">Row-Level Security (RLS), RBAC Admin Dashboard & Sentry</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">1 Month</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">July 2026</td>
             </tr>
             <tr>
-              <td><strong>Phase 4: Frontend Build</strong></td>
-              <td>Next.js App Router, Tailwind UI & Business Listings Engine</td>
-              <td>2 Months</td>
-              <td>May – July 2026</td>
-            </tr>
-            <tr>
-              <td><strong>Phase 5: Security & Admin</strong></td>
-              <td>Row-Level Security (RLS), RBAC Admin Dashboard & Sentry</td>
-              <td>1 Month</td>
-              <td>July 2026</td>
-            </tr>
-            <tr>
-              <td><strong>Phase 6: QA & Deployment</strong></td>
-              <td>System Testing, Mobile Optimization, Vercel Edge Push & Docs</td>
-              <td>1 Month</td>
-              <td>August 2026</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1; font-weight: bold;">Phase 6: QA & Deployment</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">System Testing, Mobile Optimization, Vercel Edge Push & Docs</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">1 Month</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">August 2026</td>
             </tr>
           </tbody>
         </table>
