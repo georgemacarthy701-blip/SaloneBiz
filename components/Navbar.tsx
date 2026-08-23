@@ -49,17 +49,6 @@ export function Navbar() {
         setLoading(false);
       });
 
-      supabase.auth.getSession().then(async ({ data: { session } }: any) => {
-        const currentUser = session?.user ?? null;
-        setUser(currentUser);
-        if (currentUser) {
-          await fetchRole(currentUser.id);
-        } else {
-          setUserRole(null);
-        }
-        setLoading(false);
-      });
-
       return () => {
         subscription?.unsubscribe();
       };

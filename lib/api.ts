@@ -8,9 +8,17 @@ export async function getBusinesses(category?: string) {
   let query = supabase
     .from('businesses')
     .select(`
-      *,
-      business_gallery(image_url),
-      reviews(id)
+      id,
+      name,
+      category,
+      logo,
+      rating,
+      review_count,
+      location,
+      cover_image,
+      featured,
+      starting_price,
+      maximum_price
     `)
     .eq('status', 'active')
     .order('featured', { ascending: false })
