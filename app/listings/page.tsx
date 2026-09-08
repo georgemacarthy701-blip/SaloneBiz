@@ -3,7 +3,9 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { BusinessCard } from '@/components/BusinessCard';
 import { BusinessSkeleton } from '@/components/BusinessSkeleton';
-import { getBusinesses } from '@/lib/api';
+import { DeleteConfirmationModal } from '@/components/DeleteConfirmationModal';
+import { getBusinesses, deleteBusinessAsAdmin } from '@/lib/api';
+import { createClient } from '@/lib/supabase';
 
 const CATEGORIES = [
   { id: 'all', name: 'All Categories' },
@@ -86,8 +88,56 @@ export default function ListingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [isDemoMode, setIsDemoMode] = useState(false);
 
+  // Admin authorization state
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Delete modal & action states
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [businessToDelete, setBusinessToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
   // In-memory client-side cache for instant 0ms category switching
   const cacheRef = useRef<Map<string, CachedResult>>(new Map());
+
+  // Check user role on mount and auth changes
+  useEffect(() => {
+    const supabase = createClient();
+    if (!supabase) return;
+
+    const checkAdminRole = async (userId: string) => {
+      try {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', userId)
+          .single();
+        setIsAdmin(profile?.role === 'admin');
+      } catch {
+        setIsAdmin(false);
+      }
+    };
+
+    supabase.auth.getSession().then(({ data: { session } }: any) => {
+      if (session?.user) {
+        checkAdminRole(session.user.id);
+      } else {
+        setIsAdmin(false);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
+      if (session?.user) {
+        checkAdminRole(session.user.id);
+      } else {
+        setIsAdmin(false);
+      }
+    });
+
+    return () => subscription?.unsubscribe();
+  }, []);
 
   // Debounce search input to minimize queries
   useEffect(() => {
@@ -141,7 +191,6 @@ export default function ListingsPage() {
         setIsDemoMode(false);
       } catch (err: any) {
         console.warn('Backend fetch fallback to demo records:', err?.message);
-        // Fallback demo filtering and pagination
         let filtered = DEMO_BUSINESSES;
         if (category !== 'all') {
           filtered = filtered.filter((b) => b.category === category);
@@ -187,16 +236,90 @@ export default function ListingsPage() {
     window.scrollTo({ top: 300, behavior: 'smooth' });
   };
 
+  // Open delete confirmation modal
+  const handleOpenDelete = (id: string, name: string) => {
+    setBusinessToDelete({ id, name });
+    setDeleteModalOpen(true);
+  };
+
+  // Execute deletion with optimistic UI update and cache invalidation
+  const handleConfirmDelete = async () => {
+    if (!businessToDelete) return;
+    const target = businessToDelete;
+    setDeleteLoading(true);
+
+    // Optimistic UI update: remove item immediately from current list
+    const previousBusinesses = [...businesses];
+    setBusinesses((prev) => prev.filter((b) => b.id !== target.id));
+    setTotalCount((prev) => Math.max(0, prev - 1));
+
+    // Clear in-memory cache so deleted business never reappears on category tabs
+    cacheRef.current.clear();
+
+    try {
+      await deleteBusinessAsAdmin(target.id);
+      setDeleteModalOpen(false);
+      setBusinessToDelete(null);
+      setToastMessage({
+        text: `Listing "${target.name}" was permanently deleted.`,
+        type: 'success',
+      });
+      setTimeout(() => setToastMessage(null), 4000);
+    } catch (err: any) {
+      console.error('Delete failed:', err);
+      // Revert optimistic update on failure
+      setBusinesses(previousBusinesses);
+      setTotalCount((prev) => prev + 1);
+      setToastMessage({
+        text: err?.message || 'Failed to delete listing. Please try again.',
+        type: 'error',
+      });
+      setTimeout(() => setToastMessage(null), 5000);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   const fromItem = totalCount > 0 ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
   const toItem = Math.min(currentPage * PAGE_SIZE, totalCount);
 
   return (
     <div>
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div
+          className={`fixed bottom-6 right-6 z-50 flex items-center space-x-3 px-5 py-3.5 rounded-xl shadow-2xl border text-sm font-semibold transition-all duration-300 ${
+            toastMessage.type === 'success'
+              ? 'bg-emerald-600 text-white border-emerald-500 shadow-emerald-900/20'
+              : 'bg-red-600 text-white border-red-500 shadow-red-900/20'
+          }`}
+        >
+          <span className="text-base">{toastMessage.type === 'success' ? '✓' : '⚠️'}</span>
+          <span>{toastMessage.text}</span>
+          <button
+            onClick={() => setToastMessage(null)}
+            className="ml-2 text-white/80 hover:text-white font-bold text-base leading-none"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <section className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white py-16 px-4">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-5xl font-bold mb-3">Professional Services Marketplace</h1>
-          <p className="text-lg text-blue-100">Discover verified service providers across all industries</p>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 className="text-5xl font-bold mb-3">Professional Services Marketplace</h1>
+              <p className="text-lg text-blue-100">Discover verified service providers across all industries</p>
+            </div>
+            {isAdmin && (
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-xl text-xs font-semibold text-blue-100 flex items-center space-x-2 self-start md:self-auto">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Admin Mode Active (Deletion Enabled)</span>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
@@ -321,6 +444,8 @@ export default function ListingsPage() {
                   featured={business.featured}
                   startingPrice={business.starting_price}
                   maximumPrice={business.maximum_price}
+                  isAdmin={isAdmin}
+                  onDelete={handleOpenDelete}
                 />
               ))
             )}
@@ -367,6 +492,20 @@ export default function ListingsPage() {
           )}
         </div>
       </section>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={deleteModalOpen}
+        businessName={businessToDelete?.name || ''}
+        loading={deleteLoading}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          if (!deleteLoading) {
+            setDeleteModalOpen(false);
+            setBusinessToDelete(null);
+          }
+        }}
+      />
     </div>
   );
 }

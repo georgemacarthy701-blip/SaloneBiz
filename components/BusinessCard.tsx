@@ -16,6 +16,8 @@ interface BusinessCardProps {
   featured?: boolean;
   startingPrice?: number;
   maximumPrice?: number;
+  isAdmin?: boolean;
+  onDelete?: (id: string, name: string) => void;
 }
 
 export function BusinessCard({
@@ -30,15 +32,47 @@ export function BusinessCard({
   featured,
   startingPrice,
   maximumPrice,
+  isAdmin = false,
+  onDelete,
 }: BusinessCardProps) {
   const { productImage } = parseMedia(cover);
   const optimizedImage = productImage ? optimizeImageUrl(productImage, 400) : '';
 
   return (
     <Link href={`/business/${id}`} className="block h-full">
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer h-full flex flex-col">
+      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer h-full flex flex-col relative group">
         {/* Product Image */}
         <div className="w-full h-48 bg-gray-100 flex items-center justify-center p-2 relative overflow-hidden">
+          {/* Admin Delete Action Button */}
+          {isAdmin && onDelete && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onDelete(id, name);
+              }}
+              title="Delete Listing (Admin Only)"
+              aria-label={`Delete ${name}`}
+              className="absolute top-2 left-2 z-20 px-2.5 py-1.5 bg-white/95 hover:bg-red-600 text-red-600 hover:text-white rounded-lg shadow-md border border-red-200 transition-all duration-150 backdrop-blur-xs flex items-center space-x-1 text-xs font-semibold group/del cursor-pointer"
+            >
+              <svg
+                className="w-3.5 h-3.5 transition-transform group-hover/del:scale-110"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+              <span>Delete</span>
+            </button>
+          )}
+
           {optimizedImage && optimizedImage !== 'undefined' ? (
             <img
               src={optimizedImage}
@@ -56,7 +90,7 @@ export function BusinessCard({
             </div>
           )}
           {featured && (
-            <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded">
+            <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded shadow-xs">
               Featured
             </div>
           )}

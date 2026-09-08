@@ -224,3 +224,44 @@ export function parseMedia(coverImage: string) {
     videoUrl: ''
   };
 }
+
+export async function deleteBusinessAsAdmin(businessId: string) {
+  if (!businessId) throw new Error('Business ID is required');
+
+  try {
+    const sessionRes = await supabase.auth.getSession();
+    const token = sessionRes?.data?.session?.access_token;
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(`/api/admin/businesses/${businessId}`, {
+      method: 'DELETE',
+      headers,
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      throw new Error(data?.error || `Failed to delete listing (${res.status})`);
+    }
+
+    return data;
+  } catch (err: any) {
+    // Direct client fallback
+    const { error: sbError } = await supabase
+      .from('businesses')
+      .delete()
+      .eq('id', businessId);
+
+    if (sbError) {
+      throw new Error(err?.message || sbError.message);
+    }
+
+    return { success: true, message: 'Deleted successfully' };
+  }
+}
