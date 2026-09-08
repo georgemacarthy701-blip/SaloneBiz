@@ -18,35 +18,52 @@ const url = env.NEXT_PUBLIC_SUPABASE_URL;
 const anonKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(url, anonKey);
 
-async function runTest() {
-  console.log('--- Warmed Database Latency Isolation Test ---');
-  
-  // Warmup connection
-  console.log('Warming up connection...');
-  await supabase.from('categories').select('id').limit(1);
-  console.log('Warmup complete.');
-
-  // Test 1: Querying categories table (No RLS)
-  console.log('\nRunning Categories (No RLS) queries...');
-  const catTimes = [];
-  for (let i = 0; i < 5; i++) {
-    const start = Date.now();
-    await supabase.from('categories').select('*');
-    catTimes.push(Date.now() - start);
+// Test optimizeImageUrl logic
+function optimizeImageUrl(url, width = 400) {
+  if (!url || typeof url !== 'string') return url;
+  if (url.includes('res.cloudinary.com')) {
+    if (url.includes('/f_auto,q_auto')) return url;
+    return url.replace(
+      /\/image\/upload\/(?:v\d+\/)?/,
+      (match) => match.replace('/image/upload/', `/image/upload/f_auto,q_auto,w_${width},c_limit/`)
+    );
   }
-  console.log('Individual times (Categories):', catTimes);
-  console.log('Average time (Categories):', catTimes.reduce((a, b) => a + b, 0) / catTimes.length, 'ms');
-
-  // Test 2: Querying businesses table (RLS enabled with subquery)
-  console.log('\nRunning Businesses (With RLS Subquery) queries...');
-  const bizTimes = [];
-  for (let i = 0; i < 5; i++) {
-    const start = Date.now();
-    await supabase.from('businesses').select('*').limit(10);
-    bizTimes.push(Date.now() - start);
-  }
-  console.log('Individual times (Businesses):', bizTimes);
-  console.log('Average time (Businesses):', bizTimes.reduce((a, b) => a + b, 0) / bizTimes.length, 'ms');
+  return url;
 }
 
-runTest();
+const testCloudinary = 'https://res.cloudinary.com/dz93uevat/image/upload/v1720000000/sample_photo.jpg';
+console.log('Original Cloudinary:', testCloudinary);
+console.log('Transformed Cloudinary:', optimizeImageUrl(testCloudinary, 400));
+
+async function runBenchmark() {
+  console.log('\n--- Benchmark: Paginated Category Query (Page 1, limit 12) ---');
+  const start = Date.now();
+  const { data, count, error } = await supabase
+    .from('businesses')
+    .select(`
+      id,
+      name,
+      category,
+      logo,
+      rating,
+      review_count,
+      location,
+      cover_image,
+      featured,
+      starting_price,
+      maximum_price
+    `, { count: 'exact' })
+    .eq('status', 'active')
+    .order('featured', { ascending: false })
+    .order('created_at', { ascending: false })
+    .range(0, 11);
+
+  const duration = Date.now() - start;
+  if (error) {
+    console.error('Benchmark Error:', error.message);
+  } else {
+    console.log(`Success! Fetched ${data.length} records (Total Count: ${count}) in ${duration}ms`);
+  }
+}
+
+runBenchmark();

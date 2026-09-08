@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { parseMedia } from '@/lib/api';
+import { parseMedia, optimizeImageUrl } from '@/lib/api';
 // Using emoji icons
 
 interface BusinessCardProps {
@@ -32,16 +32,19 @@ export function BusinessCard({
   maximumPrice,
 }: BusinessCardProps) {
   const { productImage } = parseMedia(cover);
+  const optimizedImage = productImage ? optimizeImageUrl(productImage, 400) : '';
 
   return (
     <Link href={`/business/${id}`} className="block h-full">
       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer h-full flex flex-col">
         {/* Product Image */}
         <div className="w-full h-48 bg-gray-100 flex items-center justify-center p-2 relative overflow-hidden">
-          {productImage && productImage !== 'undefined' ? (
+          {optimizedImage && optimizedImage !== 'undefined' ? (
             <img
-              src={productImage}
+              src={optimizedImage}
               alt={name}
+              loading="lazy"
+              decoding="async"
               className="max-w-full max-h-full object-contain"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';

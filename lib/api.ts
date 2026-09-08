@@ -3,11 +3,67 @@ import type { Business, Review } from '@/types';
 
 const supabase = createClient();
 
+export interface GetBusinessesParams {
+  category?: string;
+  page?: number;
+  pageSize?: number;
+  search?: string;
+}
+
+export interface GetBusinessesResponse {
+  businesses: any[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasMore: boolean;
+}
+
+export function optimizeImageUrl(url: string, width: number = 400): string {
+  if (!url || typeof url !== 'string') return url;
+
+  // Cloudinary image transformation: inject dynamic compression and resizing
+  if (url.includes('res.cloudinary.com')) {
+    if (url.includes('/f_auto,q_auto')) return url;
+    return url.replace(
+      /\/image\/upload\/(?:v\d+\/)?/,
+      (match) => match.replace('/image/upload/', `/image/upload/f_auto,q_auto,w_${width},c_limit/`)
+    );
+  }
+
+  // Unsplash image optimization
+  if (url.includes('images.unsplash.com')) {
+    try {
+      const parsedUrl = new URL(url);
+      parsedUrl.searchParams.set('w', width.toString());
+      parsedUrl.searchParams.set('q', '80');
+      parsedUrl.searchParams.set('auto', 'format');
+      return parsedUrl.toString();
+    } catch {
+      return url;
+    }
+  }
+
+  return url;
+}
+
 // Businesses
-export async function getBusinesses(category?: string) {
+export async function getBusinesses(
+  paramsOrCategory?: string | GetBusinessesParams
+): Promise<GetBusinessesResponse> {
+  const params: GetBusinessesParams =
+    typeof paramsOrCategory === 'string'
+      ? { category: paramsOrCategory }
+      : paramsOrCategory || {};
+
+  const { category, page = 1, pageSize = 12, search } = params;
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+
   let query = supabase
     .from('businesses')
-    .select(`
+    .select(
+      `
       id,
       name,
       category,
@@ -19,18 +75,39 @@ export async function getBusinesses(category?: string) {
       featured,
       starting_price,
       maximum_price
-    `)
+    `,
+      { count: 'exact' }
+    )
     .eq('status', 'active')
     .order('featured', { ascending: false })
     .order('created_at', { ascending: false });
 
-  if (category) {
+  if (category && category !== 'all') {
     query = query.eq('category', category);
   }
 
-  const { data, error } = await query;
+  if (search && search.trim()) {
+    query = query.or(
+      `name.ilike.%${search.trim()}%,location.ilike.%${search.trim()}%,description.ilike.%${search.trim()}%`
+    );
+  }
+
+  query = query.range(from, to);
+
+  const { data, count, error } = await query;
   if (error) throw new Error(error.message);
-  return data as any[];
+
+  const totalCount = count ?? (data?.length || 0);
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+
+  return {
+    businesses: data || [],
+    totalCount,
+    page,
+    pageSize,
+    totalPages,
+    hasMore: page < totalPages,
+  };
 }
 
 export async function getBusiness(id: string) {
