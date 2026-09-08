@@ -5,6 +5,9 @@
 -- preventing sequential table scans when users filter by industry category.
 -- ============================================================================
 
+-- Enable the pg_trgm extension required for GIN trigram indexing
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
 -- 1. Index on category alone
 CREATE INDEX IF NOT EXISTS idx_businesses_category 
   ON public.businesses(category);
